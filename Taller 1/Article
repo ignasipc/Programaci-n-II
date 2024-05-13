@@ -1,0 +1,71 @@
+/**
+* CLASE Article
+*/
+
+package taller1_ignasiparedescasasnovas;
+
+import java.io.Serializable;
+
+public class Article implements Serializable {
+    //Atributos
+    private String nombreArticulo;
+    private int codigo;
+    private String nombreFicheroProcedencia;
+    
+    //Declaración objeto centinela
+    private static final Article CENTINELA = new Article("",-1,"");
+    
+    //Método constructor vacío
+    public Article(){}
+    
+    //Método constructor
+    public Article(String nombreArticulo, int codigo, String nombreFicheroProcedencia){
+        this.nombreArticulo = nombreArticulo;
+        this.codigo = codigo;
+        this.nombreFicheroProcedencia = nombreFicheroProcedencia;
+    }
+    
+    //Métodos GETs
+    public String getNombreArticulo(){
+        return nombreArticulo;
+    }
+    
+    public int getCodigo(){
+        return codigo;
+    }
+    
+    public String getNombreFicheroProcedencia(){
+        return nombreFicheroProcedencia;
+    }
+    
+    //Métodos SETs
+    public void setNombreArticle(String nombreArticulo){
+        this.nombreArticulo = nombreArticulo;
+    }
+    
+    public void setCodigo(int codigo){
+        this.codigo = codigo;
+    }
+    
+    public void setNombreFicheroProcedencia(String nombreFicheroProveniencia){
+        this.nombreFicheroProcedencia = nombreFicheroProveniencia;
+    }
+    
+    //Método esCentinela
+    public boolean esCentinela(){
+        return codigo == CENTINELA.codigo;
+    }
+    
+    //Método getCentinela
+    public static Article getCentinela(){
+        return CENTINELA;
+    }
+    
+    //Método toString que pasa a String un objeto Article
+    @Override
+    public String toString(){
+        return ("Nombre del Artículo: "+nombreArticulo+
+                ", Codigo: "+codigo+
+                ", Nombre fichero de procedencia: "+nombreFicheroProcedencia+".");
+    }
+}
