@@ -1,0 +1,58 @@
+/**
+ * Classe que representa un índex.
+ * 
+ * @autor Tomeu Estrany e Ignasi Paredes
+ */
+public class Index {
+    /**
+     * - codi: 4 bytes 
+     * - posicio: 8 bytes
+     * MIDAREGISTRE = 12
+     */
+    private static final int MIDAREGISTRE = 12; // Mida del registre
+
+    private int codigo;
+    private long posicion;
+
+    /**
+     * Constructor de la classe Index.
+     * 
+     * @param codigo El codi de l'índex.
+     * @param posicion La posició de l'índex.
+     */
+    public Index(int codigo, long posicion) {
+        this.codigo = codigo;
+        this.posicion = posicion;
+    }
+
+    //ALTRES MÊTODOS NECESSARIS
+    
+    //Metodo toString
+    @Override
+    public String toString(){
+        return ("Codigo: "+codigo+
+                "\nPosicion: "+posicion);
+    }
+    
+    //Metodos SET's
+    public void setCodigo(int codigo){
+        this.codigo = codigo;
+    }
+    
+    public void setPosicion(long posicion){
+        this.posicion = posicion;
+    }
+    
+    //Metodos GET's
+    public static int getMIDAREGISTRE(){
+        return MIDAREGISTRE;
+    }
+    
+    public int getCodigo(){
+        return codigo;
+    }
+    
+    public long getPosicion(){
+        return posicion;
+    }
+}
