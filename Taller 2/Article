@@ -1,0 +1,93 @@
+/**
+ * Classe que representa un article.
+ * 
+ * @autor Tomeu Estrany e Ignasi Paredes
+ */
+
+public class Article {
+
+    private int codigo;
+    private String descripcion;
+    private int cantidad;
+    private boolean borrado;
+
+    /**
+     * Mida del registre: 
+     * - codi: 4 bytes 
+     * - descripcio: 30 bytes (30 caràcters * 2 bytes per caràcter Unicode)
+     * - quantitat: 4 bytes 
+     * - esborrat: 1 byte 
+     * MIDAREGISTRE = 69
+     */
+    private static final int MIDAREGISTRE = 69; // Mida del registre
+    private static final int MIDADESC = 30;   // Mida descripció
+
+    /**
+     * Constructor de la classe Article.
+     * 
+     * @param codigo El codi de l'article.
+     * @param descripcion La descripció de l'article.
+     * @param cantidad La quantitat de l'article.
+     * @param borrado Indica si l'article està marcat com a esborrat o no.
+     */
+    public Article(int codigo, String descripcion, int cantidad, boolean borrado) {
+        this.codigo = codigo;
+        this.descripcion = descripcion;
+        this.cantidad = cantidad;
+        this.borrado = borrado;
+    }
+    
+    //ALTRES MÊTODOS NECESSARIS
+    
+    //Metodo toString
+    @Override
+    public String toString(){
+        return ("Codigo: "+codigo+
+                "\nDescripcion: "+descripcion+
+                "\nCantidad: "+cantidad+
+                "\nBorrado: "+borrado);
+    }
+    
+    //Metodos SET's
+    public void setCodigo(int codigo){
+        this.codigo = codigo;
+    }
+    
+    public void setDescripcion(String descripcion){
+        this.descripcion = descripcion;
+    }
+    
+    public void setCantidad(int cantidad){
+        this.cantidad = cantidad;
+    }
+    
+    public void setBorrado(boolean borrado){
+        this.borrado = borrado;
+    }
+    
+    
+    //Metodos GET's
+    public static int getMIDADESC(){
+        return MIDADESC;
+    }
+    
+    public static int getMIDAREGISTRE(){
+        return MIDAREGISTRE;
+    }
+    
+    public int getCodigo(){
+        return codigo;
+    }
+    
+    public String getDescripcion(){
+        return descripcion;
+    }
+    
+    public int getCantidad(){
+        return cantidad;
+    }
+    
+    public boolean getBorrado(){
+        return borrado;
+    }
+}
