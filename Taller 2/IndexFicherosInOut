@@ -1,0 +1,104 @@
+/**
+ * CLASE IndexFicherosInOut
+ */
+
+package Taller2_clases_parciales;
+
+import java.io.EOFException;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+
+public class IndexFicherosInOut {
+    //DECLARACIÓN ATRIBUTOS
+    private RandomAccessFile fichero=null;
+    
+    //MÉTODOS
+    
+    //MÉTODO CONSTRUCTOR
+    public IndexFicherosInOut(String nombreFichero) {
+        try {
+            fichero = new RandomAccessFile(nombreFichero,"rw");
+        }catch (FileNotFoundException error) {
+            System.err.println("ERROR: "+error.toString());
+        }
+    }
+    
+    //MÉTODOS FUNCIONALES
+
+    //Método lectura que posibilita la lectura de un objeto Index desde el fichero
+    public Index lectura() {
+        Index indice = new Index(0,0);
+        
+        try {
+            indice.setCodigo(fichero.readInt());
+            indice.setPosicion(fichero.readLong());
+        }catch (EOFException error) {
+            return null;
+        }
+        catch (IOException error) {
+            System.err.println("ERROR: "+error.toString());
+        }
+        return indice;
+    }
+    
+    //Método lectura que posibilita la lectura de un objeto Index desde el
+    //fichero dado el número del index de fichero Index
+    public Index lectura(int posicion) {
+        Index indice = new Index(0,0);
+        
+        try {
+            if ((posicion>0) && (posicion<=(fichero.length()/Index.getMIDAREGISTRE()))) {
+                fichero.seek(((posicion-1)*Index.getMIDAREGISTRE()));
+                indice.setCodigo(fichero.readInt());
+                indice.setPosicion(fichero.readLong());
+            }else {
+                throw new EntradaIncorrecta("POSICIÓN NO EXISTENTE");
+            }
+        }catch (EntradaIncorrecta error) {
+            System.err.println(error.toString());
+        }catch (IOException error) {
+            System.err.println("ERROR: "+error.toString());
+        }
+        return indice;
+    }
+    
+    //Método escritura que posibilita la escritura de un objeto Index en el
+    //fichero
+    public void escritura(Index indice) {
+        try {
+            fichero.seek(fichero.length());
+            fichero.writeInt(indice.getCodigo());
+            fichero.writeLong(indice.getPosicion());
+        }catch (IOException error) {
+            System.err.println("ERROR: "+error.toString());
+        }
+    }
+    
+    //Método que posibilita la reescritura en el fichero de un objeto Index
+    //en función del número que ocupa en el fichero
+    public void escritura(Index indice, int posicion) {
+        try {
+            if ((posicion>0) &&(posicion<=(fichero.length()/Index.getMIDAREGISTRE()))) {
+                fichero.seek((posicion-1)*Index.getMIDAREGISTRE());
+                fichero.writeInt(indice.getCodigo());
+                fichero.writeLong(indice.getPosicion());
+            }else {
+                throw new EntradaIncorrecta("NO ES POSIBLE ESCRIBIR EL INDEX DADO");
+            }
+        }catch (EntradaIncorrecta error) {
+            System.err.println(error.toString());
+        }catch (IOException error) {
+            System.err.println("ERROR: "+error.toString());
+        }
+    }
+    
+    //cierre del enlace con el fichero
+    public void cierre() {
+        try {
+            fichero.close();
+        }catch (IOException error) {
+            System.err.println("ERROR: "+error.toString());
+        }
+    }
+}
