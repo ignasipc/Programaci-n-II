@@ -1,0 +1,11 @@
+/*
+EXEPCIÓN NO PREDEFINIDA
+ */
+
+package Taller2_clases_parciales;
+
+public class EntradaIncorrecta extends Exception {
+    public EntradaIncorrecta (String mensaje) {
+        super("¡¡¡¡ "+mensaje+" !!!!");
+    }
+}
