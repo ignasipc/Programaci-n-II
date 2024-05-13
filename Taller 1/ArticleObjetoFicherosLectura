@@ -1,0 +1,35 @@
+/**
+ * CLASE ArticleObjetoFicherosLectura que posibilita la lectura de objetos Article
+ */
+
+package taller1_ignasiparedescasasnovas;
+
+import java.io.*;
+
+public class ArticleObjetoFicherosLectura {
+    //Atributo
+    private ObjectInputStream fichero = null;
+    
+    //Método constructor
+    public ArticleObjetoFicherosLectura (String nombreFichero) throws IOException{
+        fichero = new ObjectInputStream(new BufferedInputStream(new FileInputStream(nombreFichero)));
+    }
+    
+    //Método lectura de objeto Article
+    public Article lectura()throws ClassNotFoundException, IOException{
+        Article article = new Article();
+        
+        try{
+            article = (Article) fichero.readObject();
+        } finally{
+            return article;
+        }
+    }
+    
+    //Método cierre del fichero
+    public void cierre()throws IOException{
+        if (fichero!=null) {
+                fichero.close();
+        }
+    }
+}
