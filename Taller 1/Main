@@ -1,0 +1,152 @@
+/**
+ * Fecha inicio: 29/04/2024
+ * Fecha fin: 29/04/2024
+ *
+ * @author Ignasi Paredes Casasnovas
+ */
+
+package taller1_ignasiparedescasasnovas;
+
+import java.io.*;
+import java.util.Random;
+
+public class Main {
+    //Atributos
+    public Article articles [];
+    
+    //Método main
+    public static void main(String[] args) {
+        new Main().metodoPrincipal();
+    }
+    
+    //Método principal
+    private void metodoPrincipal(){
+        //Generamos un número random de ficheros entre [1,10)
+        Random random = new Random();
+        int numeroRandomFicheros = random.nextInt(1, 10);
+        
+        System.out.println("Número random de ficheros: "+numeroRandomFicheros+".\n");
+        
+        crearFicheros(numeroRandomFicheros);
+        
+        crearFicheroOrdenado(numeroRandomFicheros);
+        
+        visualizacionFicheroOrdenado();
+    }
+    
+    //Método que genera N ficheros, siendo N numeroRandomFicheros, con M Articles diferentes en cada fichero,
+    //siendo M numeroRandomArticles.
+    private void crearFicheros(int numeroRandom){
+        Random random2 = new Random();
+        Article articulo;
+        ArticleObjetoFicherosEscritura fichero;
+        int numeroRandomArticles;
+        
+        //Creamos N ficheros
+        for (int i = 1; i < numeroRandom+1; i++) {
+            //Para cada fichero, creamos un numero random que dictará el número de artículos del fichero
+            numeroRandomArticles = random2.nextInt(1, 21);
+            System.out.println("Número de articulos que contendrá el fichero f"+i+".dat: "+numeroRandomArticles+ "\n");
+            try{
+                fichero = new ArticleObjetoFicherosEscritura("f"+i+".dat");
+                System.out.println("Fichero "+"f"+i+".dat"+" creado.\n");
+                
+                //Escribimos M articulos en el fichero
+                for (int j = 1; j < numeroRandomArticles+1; j++) {
+                    articulo = new Article("Article"+(j-1), numeroRandomArticles*j, "f"+i+".dat");
+                    fichero.escritura(articulo);
+                    System.out.println("Articulo: " + articulo.toString() + " Escrito en el fichero " + "f"+i+".dat correctamente");
+                }
+                
+                //Al acabar de escribir todos los articulos, añadimos el centinela y cerramos el fichero
+                fichero.escritura(Article.getCentinela());
+                fichero.cierre();
+                
+                System.out.println();
+            }catch(IOException error){
+                System.err.println(error.toString());
+            }
+        }
+    }
+    
+    //Método que fusiona los N ficheros en uno, ordenando los artículos por orden de menor a mayor
+    private void crearFicheroOrdenado(int numeroFicheros){
+        ArticleObjetoFicherosLectura ficheroLectura [];
+        ArticleObjetoFicherosEscritura ficheroEscritura;
+        
+        try{
+            ficheroEscritura = new ArticleObjetoFicherosEscritura("fusio.dat");
+            ficheroLectura = new ArticleObjetoFicherosLectura[numeroFicheros];
+            articles = new Article[numeroFicheros];
+            
+            //Almacenamos el primer objeto Article de cada fichero en un array
+            for (int i = 0; i < numeroFicheros; i++) {
+                ficheroLectura[i] = new ArticleObjetoFicherosLectura("f"+(i+1)+".dat");
+                
+                articles[i] = ficheroLectura[i].lectura();
+            }
+            
+            //Recorre todos los objetos de los ficheros hasta que encuentra en todos ellos al centinela
+            while(!ficherosFinalizados(numeroFicheros)){
+                Article article = new Article();
+                article.setCodigo(Integer.MAX_VALUE);
+                int posNumMenor = 0;
+                
+                //Buscamos el código más pequeño de todos los objetos del array
+                //(Comprobando que no sea el centinela con código -1)
+                for (int i = 0; i < numeroFicheros; i++) {
+                    if ((article.getCodigo() > articles[i].getCodigo())&&(articles[i].getCodigo()!=-1)) {
+                        //Guardamos el Articulo con menor código y su respectivo número de fichero
+                        article = articles[i];
+                        posNumMenor = i;
+                    }
+                }
+                //Escribimos el articulo con código menor y añadimos al array el siguiente objeto 
+                //del fichero al que le hemos "quitado" el objeto
+                ficheroEscritura.escritura(article);
+                articles[posNumMenor] = ficheroLectura[posNumMenor].lectura();
+            }
+            
+            //Cerramos los ficheros y escribimos el centinela al fichero de fusión
+            for (int i = 0; i < numeroFicheros; i++) {
+                ficheroLectura[i].cierre();
+            }
+            ficheroEscritura.escritura(Article.getCentinela());
+            ficheroEscritura.cierre();
+            
+        }catch(ClassNotFoundException | IOException error){
+            System.err.println(error.toString());
+        }
+    }
+    
+    //Método booleano que devuelve si todos los ficheros han llegado al centinela
+    private boolean ficherosFinalizados(int numeroFicheros){
+        boolean finalizados = true;
+        
+        for (int i = 0; i < numeroFicheros; i++) {
+            if(!articles[i].esCentinela()){
+                finalizados = false;
+                break;
+            }
+        }
+        
+        return finalizados;
+    }
+    
+    //Método que recorre todo el fichero fusio.dat y va mostrando sus objetos Article
+    private void visualizacionFicheroOrdenado(){
+        try {
+            ArticleObjetoFicherosLectura ficheroLectura = new ArticleObjetoFicherosLectura("fusio.dat");
+            Article article;
+            
+            System.out.println("-------------------------------------------------------------------------------"
+                    + "\nContenido del fichero de fusión:\n\n");
+            
+            for (article = ficheroLectura.lectura(); !article.esCentinela(); article = ficheroLectura.lectura()) {
+                System.out.println(article.toString());
+            }
+        } catch (IOException | ClassNotFoundException error) {
+            System.err.println(error.toString());
+        }
+    }
+}
