@@ -1,0 +1,244 @@
+/**
+ * Fecha inicio: 11/05/2024
+ * Fecha fin: 
+ *
+ * @author Ignasi Paredes
+ */
+
+package Taller2_clases_parciales;
+
+public class Main {
+    public static void main(String[] args) {
+        new Main().metodoPrincipal();
+    }
+    
+    private final String nombreFicheroArticulos = "articles.dat";
+    private final String nombreFicheroIndices = "indices.dat";
+    private static int POSICIONMASALTA;
+    private static boolean fin = false;
+    
+    public void metodoPrincipal(){
+        
+        crearFicheroIndices();
+        
+        while(!fin){
+            menu();
+            
+            switch(LT.readInt()){
+                case 1 ->{
+                    altaRegistro();
+                }
+                case 2 ->{
+                    
+                }
+                case 3 ->{
+                    
+                }
+                case 4 ->{
+                    
+                }
+                case 5 ->{
+                    
+                }
+                case 6 ->{
+                    listarTodoElFichero();
+                }
+                case 7 ->{
+                    fin = true;
+                }
+            }
+        }
+    }
+    
+    //Metodo que crea el fichero de indices con Codigos del 1 al 9999 y con las posiciones del articulo asociado
+    public void crearFicheroIndices(){
+        IndexFicherosInOut ficheroIndices = new IndexFicherosInOut(nombreFicheroIndices);
+        ArticleFicherosInOut ficheroArticulos = new ArticleFicherosInOut(nombreFicheroArticulos);
+        
+        //Creamos 9999 objetos indice, desde Codigo 1 hasta Codigo 9999 y los vamos metiendo en el fichero de indices
+        Index indice;
+        for (int i = 1; i < 10000; i++) {
+            //Creamos el objeto indice
+            indice = new Index(i,-1);
+            //Insertamos el objeto en el fichero
+            ficheroIndices.escritura(indice);
+        }
+        
+        //Secuencialmente relacionamos cada articulo leido del fichero con su respectivo index.
+        //Con una relacion Codigo del Articulo <=> Codigo del Indice y junto al codigo del indice,
+        //la posicion del articulo en el fichero
+        Article articulo = ficheroArticulos.lecturaArticle();
+        int posicion = 1;
+        while(articulo != null){
+            //Si no esta borrado, lo relacionamos con su indice
+            if(!articulo.getBorrado()){
+                indice = new Index(articulo.getCodigo(),posicion);
+                ficheroIndices.escritura(indice,articulo.getCodigo());
+                posicion++;
+            }
+            //Leemos el siguiente articulo
+            articulo = ficheroArticulos.lecturaArticle();
+        }
+        
+        //Asignamos a POSICIONMASALTA el valor de la posicion mas alta existente del fichero
+        POSICIONMASALTA = posicion;
+        
+//Lectura de todo el fichero de indices para correcciones
+//        indice = ficheroIndices.lectura(1);
+//        for (int i = 1; i < 9999; i++) {
+//            System.out.println(indice.toString());
+//            indice = ficheroIndices.lectura();
+//        }
+        
+        
+        //Cerramos los ficheros
+        ficheroIndices.cierre();
+        ficheroArticulos.cierre();
+    }
+    
+    //Metodo que crea un nuevo registro en el fichero de Articulos y lo asocia al fichero de Indices que
+    //le corresponda
+    public void altaRegistro(){
+        limpiarPantalla();
+        IndexFicherosInOut ficheroIndices = new IndexFicherosInOut(nombreFicheroIndices);
+        ArticleFicherosInOut ficheroArticulos = new ArticleFicherosInOut(nombreFicheroArticulos);
+        
+        //Pedimos por teclado un objeto Article, y mientras el codigo escrito ya exista
+        //volveremos a pedir al usuario un objeto Article por teclado
+        Article articulo;
+        do{
+            articulo = obtenerArticuloPorTeclado(ficheroArticulos);
+        }while(articulo==null);
+        
+        //Escribimos en la posicion mas alta, el nuevo registro y aumentamos POSICIONMASALTA
+        ficheroArticulos.escritura(articulo);
+        POSICIONMASALTA++;
+        
+        //Asociamos su codigo a la posicion
+        Index indice = new Index(articulo.getCodigo(),POSICIONMASALTA);
+        ficheroIndices.escritura(indice,articulo.getCodigo());
+        
+        //Cerramos los ficheros
+        ficheroIndices.cierre();
+        ficheroArticulos.cierre();
+    }
+    
+    //Metodo que devuelve un objeto Article introducido por teclado
+    public Article obtenerArticuloPorTeclado(ArticleFicherosInOut ficheroArticulos){
+        Article articulo;
+        try{
+            //Pedimos al usuario los datos del nuevo registro
+            //Pedimos el codigo
+            System.out.print("Introduce el codigo: ");
+            int codigo = LT.readInt();
+                //Si ha escrito una cantidad menor fuera del rango [1,9999], lanzamos una excepcion
+                if((codigo<1)||(codigo>9999)){
+                    throw new EntradaIncorrecta("EL CODIGO TIENE QUE ESTAR COMPRENDIDO ENTRE 1 y 9999");
+                }
+
+            //Leemos de manera secuencial en el fichero de articulos si ya existe el codigo dado
+            articulo = ficheroArticulos.lecturaArticle();
+            while(articulo != null){
+                //Si ya existe, lanzamos una excepcion
+                if(articulo.getCodigo()==codigo){
+                    throw new EntradaIncorrecta("ESTE CODIGO YA EXISTE");
+                }
+                //Leemos el siguiente articulo
+                articulo = ficheroArticulos.lecturaArticle();
+            }
+
+            //Pedimos la descripcion
+            System.out.print("Introduce la descripcion: ");
+            String descripcion = LT.readLine();
+                //Si no ha escrito nada, lanzamos una excepcion
+                if(descripcion.equals("")){
+                    throw new EntradaIncorrecta("TIENES QUE RELLENAR EL CAMPO DESCRIPCION");
+                }
+            
+
+            //Pedimos la cantidad
+            System.out.print("Introduce la cantidad: ");
+            int cantidad = LT.readInt();
+                //Si ha escrito una cantidad menor a 0, lanzamos una excepcion
+                if(cantidad<0){
+                    throw new EntradaIncorrecta("LA CANTIDAD NO PUEDE SER NEGATIVA");
+                }
+            
+            articulo = new Article(codigo, descripcion, cantidad,false);
+        }catch(EntradaIncorrecta error){
+            System.err.println(error.toString());
+            return null;
+        }
+        
+        return articulo;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    //Metodo que muestra todos los objetos Article contenidos en el fichero "articles.dat" 
+    //en el orden secuencial (Los borrados incluidos)
+    public void listarTodoElFichero(){
+        ArticleFicherosInOut ficheroArticulos = new ArticleFicherosInOut(nombreFicheroArticulos);
+        
+        //Lectura de todos los articulos
+        Article article = ficheroArticulos.lecturaArticle();
+        while(article != null){
+            //Mostramos por pantalla el articulo
+            System.out.println("\n"+article.toString());
+            article = ficheroArticulos.lecturaArticle();
+        }
+        ficheroArticulos.cierre();
+        
+        //No volvemos al menu hasta que el usuario pulsa ENTER
+        pausa();
+    }
+    
+    //Metodo que muestra por pantalla todas las opciones del menu
+    public void menu(){
+        limpiarPantalla();
+        System.out.print("--------------- MENÚ ---------------\n"
+                + "\n[1] -> Dar de alta un registro"
+                + "\n[2] -> Leer un registro a partir de su código"
+                + "\n[3] -> Modificar un registro a partir de su código"
+                + "\n[4] -> Eliminar un registro a partir de su código"
+                + "\n[5] -> Listar todos los registros por orden de código"
+                + "\n[6] -> Listar todos los artículos del archivo aleatorio articles.dat con el orden que tienen en el archivo"
+                + "\n[7] -> Salir"
+                + "\n\nIntroduce una opción: ");
+    }
+    
+    //Metodo que "limpia" la pantalla dejando muy arriba el anterior contenido
+    public void limpiarPantalla(){
+        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+    }
+    
+    //Metodo que crea una pausa del programa hasta que el usuario pulsa ENTER
+    public void pausa(){
+        System.out.print("\nPULSA ENTER PARA CONTINUAR: ");
+        LT.readChar();
+    }
+}
