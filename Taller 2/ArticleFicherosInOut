@@ -1,0 +1,164 @@
+/**
+ * CLASE ArticleFicherosInOut
+ */
+
+package Taller2_clases_parciales;
+
+import java.io.EOFException;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+
+public class ArticleFicherosInOut {
+    //DECLARACIÓN ATRIBUTOS
+    private RandomAccessFile fichero=null;
+    
+    //MÉTODOS
+    
+    //MÉTODO CONSTRUCTOR
+    public ArticleFicherosInOut(String nombreFichero) {
+        try {
+            fichero = new RandomAccessFile(nombreFichero,"rw");
+        }catch (FileNotFoundException error) {
+            System.err.println("ERROR: "+error.toString());
+        }
+    }
+    
+    //MÉTODOS FUNCIONALES
+
+    //Método lectura que posibilita la lectura de un objeto ARTICULO desde el fichero
+    public Article lecturaArticle() {
+        Article articulo = new Article(0,"",0,false);
+        
+        try {
+            articulo.setCodigo(fichero.readInt());
+            articulo.setDescripcion(lecturaString(Article.getMIDADESC()));
+            articulo.setCantidad(fichero.readInt());
+            articulo.setBorrado(fichero.readBoolean());
+        }catch (EOFException error) {
+            return null;
+        }
+        catch (IOException error) {
+            System.err.println("ERROR: "+error.toString());
+        }
+        return articulo;
+    }
+    
+    //Método lectura que posibilita la lectura de un objeto ARTICULO desde el
+    //fichero dado el número del ARTICULO de fichero ARTICULO
+    public Article lecturaArticle(int posicion) {
+        Article articulo = new Article(0,"",0,false);
+        
+        try {
+            if ((posicion>0) && (posicion<=(fichero.length()/Article.getMIDAREGISTRE()))) {
+                fichero.seek(((posicion-1)*Article.getMIDAREGISTRE()));
+                articulo.setCodigo(fichero.readInt());
+                articulo.setDescripcion(lecturaString(Article.getMIDADESC()));
+                articulo.setCantidad(fichero.readInt());
+                articulo.setBorrado(fichero.readBoolean());
+            }else {
+                throw new EntradaIncorrecta("POSICIÓN NO EXISTENTE");
+            }
+        }catch (EntradaIncorrecta error) {
+            System.err.println(error.toString());
+        }catch (IOException error) {
+            System.err.println("ERROR: "+error.toString());
+        }
+        return articulo;
+    }
+    
+    //Método que lleva a cabo la lectura de un String desde el fichero a través 
+    //de la lectura de los caracteres que lo conforman en función del número 
+    //de éstos dado por parámetro
+    private String lecturaString(int dimension) {
+        //DECLARACIONES
+        //declaración String para ir concatenando los caracteres que van a ser
+        //leidos desde el fichero
+        String campo="";
+        
+        try {
+            //ACCIONES
+            //bucle de lectura y concatenación de los caracteres desde el fichero
+            for (int i=0;i<dimension;i++) {
+                //concatenación en el String campo del caracter leido desde el
+                //fichero
+                campo=campo+fichero.readChar();
+            }  
+        }catch (IOException error) {
+            System.err.println("ERROR: "+error.toString());            
+        }
+        //devolución del String resultante
+        return campo;
+    }
+    
+    //Método escritura que posibilita la escritura de un objeto Article en el
+    //fichero
+    public void escritura(Article articulo) {
+        try {
+            fichero.seek(fichero.length());
+            fichero.writeInt(articulo.getCodigo());
+            escrituraString(articulo.getDescripcion(),Article.getMIDADESC());
+            fichero.writeInt(articulo.getCantidad());
+            fichero.writeBoolean(articulo.getBorrado());
+        }catch (IOException error) {
+            System.err.println("ERROR: "+error.toString());
+        }
+    }
+    
+    //Método que posibilita la reescritura en el fichero de un objeto Article
+    //en función del número que ocupa en el fichero
+    public void escritura(Article articulo, int posicion) {
+        try {
+            if ((posicion>0) &&(posicion<=(fichero.length()/Article.getMIDAREGISTRE()))) {
+                fichero.seek((posicion-1)*Article.getMIDAREGISTRE());
+                fichero.seek(fichero.length());
+                fichero.writeInt(articulo.getCodigo());
+                escrituraString(articulo.getDescripcion(),Article.getMIDADESC());
+                fichero.writeInt(articulo.getCantidad());
+                fichero.writeBoolean(articulo.getBorrado());
+            }else {
+                throw new EntradaIncorrecta("NO ES POSIBLE ESCRIBIR EL ARTICULO DADO");
+            }
+        }catch (EntradaIncorrecta error) {
+            System.err.println(error.toString());
+        }catch (IOException error) {
+            System.err.println("ERROR: "+error.toString());
+        }
+    }
+    
+    //Método que lleva a cabo la escritura de un String en el fichero a través 
+    //de la escritura de los caracteres que lo conforman en función del número 
+    //de éstos dado por parámetro
+    private void escrituraString (String campo, int dimension) throws IOException {
+        try {
+            //bucle de escritura en el fichero, caracter a caracter, del String
+            //y en función de la dimensión dada
+            for (int i=0;((i<dimension) && (i<campo.length())); i++) {
+                //escritura en el fichero del caracter i-ésimo del String
+                fichero.writeChar(campo.charAt(i));
+            }
+            //verificar si la dimensión del String dado es menor que la dimensión
+            //del atributo que debe representar del objeto Contacto
+            if (campo.length()<dimension) {
+                //al ser la dimnensión del String menor que la dimensión del atributo
+                //que representa del objeto Contacto se escribirán caracteres
+                //espacio hasta llegar a la dimensión del atributo
+                for (int i=0; i<(dimension-campo.length()); i++) {
+                    //escritura en el fichero del caracter espacio
+                    fichero.writeChar(' ');
+                }
+            }            
+        }catch (IOException error) {
+            System.err.println("ERROR: "+error.toString());            
+        }
+    }
+    
+    //Cierre del enlace con el fichero
+    public void cierre() {
+        try {
+            fichero.close();
+        }catch (IOException error) {
+            System.err.println("ERROR: "+error.toString());
+        }
+    }
+}
