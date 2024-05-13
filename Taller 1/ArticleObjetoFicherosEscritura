@@ -1,0 +1,29 @@
+/**
+ * CLASE ArticleObjetoFicherosEscritura usado para escribir objetos Article en ficheros
+ */
+
+package taller1_ignasiparedescasasnovas;
+
+import java.io.*;
+
+public class ArticleObjetoFicherosEscritura {
+    //Atributo
+    private ObjectOutputStream fichero = null;
+    
+    //Método constructor
+    public ArticleObjetoFicherosEscritura (String nombreFichero) throws IOException{
+        fichero = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(nombreFichero)));
+    }
+    
+    //Método escritura de objeto Article en el fichero
+    public void escritura(Article article) throws IOException{
+        fichero.writeObject(article);
+    }
+    
+    //Método cierre del fichero
+    public void cierre()throws IOException{
+        if (fichero!=null) {
+                fichero.close();
+        }
+    }
+}
