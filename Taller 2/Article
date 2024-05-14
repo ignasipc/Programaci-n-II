@@ -1,3 +1,5 @@
+package Taller2_clases_parciales;
+
 /**
  * Classe que representa un article.
  * 
@@ -37,9 +39,9 @@ public class Article {
         this.borrado = borrado;
     }
     
-    //ALTRES MÊTODOS NECESSARIS
+    //ALTRES METODOS NECESSARIS
     
-    //Metodo toString
+    //Método toString
     @Override
     public String toString(){
         return ("Codigo: "+codigo+
@@ -48,7 +50,7 @@ public class Article {
                 "\nBorrado: "+borrado);
     }
     
-    //Metodos SET's
+    //Métodos SET's
     public void setCodigo(int codigo){
         this.codigo = codigo;
     }
@@ -66,7 +68,7 @@ public class Article {
     }
     
     
-    //Metodos GET's
+    //Métodos GET's
     public static int getMIDADESC(){
         return MIDADESC;
     }
