@@ -1,3 +1,5 @@
+package Taller2_clases_parciales;
+
 /**
  * Classe que representa un índex.
  * 
@@ -25,16 +27,16 @@ public class Index {
         this.posicion = posicion;
     }
 
-    //ALTRES MÊTODOS NECESSARIS
+    //ALTRES METODOS NECESSARIS
     
-    //Metodo toString
+    //Método toString
     @Override
     public String toString(){
         return ("Codigo: "+codigo+
                 "\nPosicion: "+posicion);
     }
     
-    //Metodos SET's
+    //Métodos SET's
     public void setCodigo(int codigo){
         this.codigo = codigo;
     }
@@ -43,7 +45,7 @@ public class Index {
         this.posicion = posicion;
     }
     
-    //Metodos GET's
+    //Métodos GET's
     public static int getMIDAREGISTRE(){
         return MIDAREGISTRE;
     }
