@@ -26,7 +26,7 @@ public class ArticleFicherosInOut {
     
     //MÉTODOS FUNCIONALES
 
-    //Método lectura que posibilita la lectura de un objeto ARTICULO desde el fichero
+    //Método lectura que posibilita la lectura de un objeto ARTÍCULO desde el fichero
     public Article lecturaArticle() {
         Article articulo = new Article(0,"",0,false);
         
@@ -44,8 +44,8 @@ public class ArticleFicherosInOut {
         return articulo;
     }
     
-    //Método lectura que posibilita la lectura de un objeto ARTICULO desde el
-    //fichero dado el número del ARTICULO de fichero ARTICULO
+    //Método lectura que posibilita la lectura de un objeto ARTÍCULO desde el
+    //fichero dado el número del ARTÍCULO de fichero ARTÍCULO
     public Article lecturaArticle(int posicion) {
         Article articulo = new Article(0,"",0,false);
         
@@ -111,13 +111,12 @@ public class ArticleFicherosInOut {
         try {
             if ((posicion>0) &&(posicion<=(fichero.length()/Article.getMIDAREGISTRE()))) {
                 fichero.seek((posicion-1)*Article.getMIDAREGISTRE());
-                fichero.seek(fichero.length());
                 fichero.writeInt(articulo.getCodigo());
                 escrituraString(articulo.getDescripcion(),Article.getMIDADESC());
                 fichero.writeInt(articulo.getCantidad());
                 fichero.writeBoolean(articulo.getBorrado());
             }else {
-                throw new EntradaIncorrecta("NO ES POSIBLE ESCRIBIR EL ARTICULO DADO");
+                throw new EntradaIncorrecta("NO ES POSIBLE ESCRIBIR EL ARTÍCULO DADO");
             }
         }catch (EntradaIncorrecta error) {
             System.err.println(error.toString());
