@@ -50,6 +50,13 @@ public class Article {
                 "\nBorrado: "+borrado);
     }
     
+    //Método toString para poder imprimir en pantalla el Article sin el booleano
+    public String toStringSinBooleano(){
+        return ("Codigo: "+codigo+
+                "\nDescripcion: "+descripcion+
+                "\nCantidad: "+cantidad);
+    }
+    
     //Métodos SET's
     public void setCodigo(int codigo){
         this.codigo = codigo;
