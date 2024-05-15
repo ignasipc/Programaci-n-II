@@ -399,8 +399,8 @@ public class Main {
                 
                 //Si el artículo NO ha sido borrado de manera lógica
                 if(!articulo.getBorrado()){
-                    //Mostramos por pantalla el Article leído
-                    System.out.println("\n"+articulo.toString());
+                    //Mostramos por pantalla el Article leído sin el booleano
+                    System.out.println("\n"+articulo.toStringSinBooleano());
                 }
             }
         }
